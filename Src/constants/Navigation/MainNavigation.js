@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeStack from './HomeStack';
@@ -9,6 +9,10 @@ import DrawerContent from '../../Screens/Drawer/Drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import Dummy1 from '../../Screens/dummy/Dummy1';
 import Dummy2 from '../../Screens/dummy/Dummy2';
+import { AuthContext } from '../AuthContext';
+import { NavigationContainer } from '@react-navigation/native';
+import Login from '../../Screens/Auth/Login';
+import Signup from '../../Screens/Auth/SignUp';
 
 const Tab = createBottomTabNavigator();
 
@@ -65,10 +69,41 @@ function RootStackNavigator() {
 
 const Drawer = createDrawerNavigator();
 
-export default function MainDrawer() {
+function MainDrawer() {
     return (
         <Drawer.Navigator initialRouteName="Root" drawerContent={props => <DrawerContent {...props} />}>
             <Drawer.Screen name="Root" component={RootStackNavigator} />
         </Drawer.Navigator>
+    );
+}
+
+const MainStack = createStackNavigator();
+
+export default function MainNavigator() {
+    const context = useContext(AuthContext);
+    const isUserSignin = context.isSignin;
+
+    return (
+        <NavigationContainer>
+            {
+                (!isUserSignin) ?
+                    <MainStack.Navigator
+                        screenOptions={{
+                            headerShown: false
+                        }}
+                    >
+                        <MainStack.Screen name="Login" component={Login} />
+                        <MainStack.Screen name="Signup" component={Signup} />
+                    </MainStack.Navigator>
+                    :
+                    <MainStack.Navigator
+                    screenOptions={{
+                        headerShown: false
+                    }}
+                >
+                    <MainStack.Screen name="App" component={MainDrawer} />
+                </MainStack.Navigator>
+            }
+        </NavigationContainer>
     );
 }

@@ -9,14 +9,14 @@
 import React from 'react';
 
 import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-import MainDrawer from './Src/constants/Navigation/MainNavigation';
+import { AuthProvider } from './Src/constants/AuthContext';
+import MainNavigator from './Src/constants/Navigation/MainNavigation';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <MainDrawer />
-    </NavigationContainer>
+    <AuthProvider>
+      <MainNavigator />
+    </AuthProvider>  
   );
 };
 

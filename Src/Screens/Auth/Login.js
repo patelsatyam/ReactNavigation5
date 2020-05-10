@@ -15,6 +15,8 @@ import {
 } from 'react-native-responsive-screen';
 import { Icon, Input } from 'react-native-elements';
 import { Colors } from '../../constants/Colors';
+import { AuthContext } from '../../constants/AuthContext';
+
 
 class Login extends Component {
   constructor(props) {
@@ -33,8 +35,11 @@ class Login extends Component {
   }
 
 
-  loginHandler = async() => {
+  static contextType = AuthContext;
 
+  loginHandler = async() => {
+    let contextValue = this.context;
+    
     const { phone_number, password, success } = this.state;
     
     if(phone_number == '' || password == '' ){
@@ -49,6 +54,9 @@ class Login extends Component {
     } else {
      
         /**@API_Calling_here */
+        await contextValue.updateAuth()
+
+        this.props.navigation.navigate("App")
 
     }
   };
@@ -117,8 +125,7 @@ class Login extends Component {
                   }}>
                   <TouchableOpacity
                     style={[styles.rectangle]}
-                      onPress={ () => { this.emailValidate() }}
-                    disabled={this.state.disabled}
+                      onPress={ () => { this.loginHandler() }}
                     >
                     <Text style={styles.login}>Login</Text>
                   </TouchableOpacity>

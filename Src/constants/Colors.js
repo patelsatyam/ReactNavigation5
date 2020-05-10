@@ -1,5 +1,5 @@
 export const Colors = {
-    baseColor: '#75AA43',
+    baseColor: '#363b59',
     baseTextColor: '#57544F',
     errorColor: '#f20000'
 }

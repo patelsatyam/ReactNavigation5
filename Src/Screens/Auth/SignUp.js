@@ -7,53 +7,39 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import { Icon, Input, CheckBox } from 'react-native-elements'
 import { Colors } from '../../constants/Colors'
+import { AuthContext } from '../../constants/AuthContext';
+
+
 
 class Signup extends Component {
     constructor(props) {
         super(props)
 
-        this.user = React.createRef();
-        this.passwd = React.createRef();
         this.state = {
 
             name: '',
             email: '',
             password: '',
-            Cpassword: '',
             phone_number: '',
-            company_name: '',
-            company_website: '',
-            firebase_token: 'dsdsdsdsinjvnjhfyeuhjdsd',
-            UserLoginData: '',
-            selectedCountry: '',
-            CountryDataCalled: false,
-            countryListData: [],
             isPassSame: true,
-            cca2: 'US',
-            code: 91,
             success: {
                 name: true,
                 email: true,
                 password: true,
                 phone_number: true,
-                company_name: true,
-                company_website: true,
-                firebase_token: true
             },
             isLoading: false,
-            disabled: false,
-            error: true,
-            pass: true,
-            checked: false
         }
     }
 
+    static contextType = AuthContext;
 
-    onSignUp = () => {
+    onSignUp = async () => {
+        let contextValue = this.context;
 
         const { name, email, phone_number, password, success } = this.state
 
-        if (name == '' || email == '' || phone_number == '' || company_name == '' || company_website == '' || password == '' || firebase_token == '') {
+        if (name == '' || email == '' || phone_number == '' || password == '') {
             this.setState({
                 success: {
                     ...success,
@@ -64,28 +50,19 @@ class Signup extends Component {
                 }
             });
         } else {
-             /**@API_call */
+            /**@API_Calling_here */
+            await contextValue.updateAuth()
 
-        }
-    }
+            this.props.navigation.navigate("App")
 
-    /**@check_for_the_confirm_password */
 
-    confirmPassword = () => {
-
-        const { password, Cpassword } = this.state;
-
-        if (password !== Cpassword) {
-            this.setState({ isPassSame: false })
-        } else {
-            this.setState({ isPassSame: true })
         }
     }
 
     render() {
         return (
-            <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : null}>
-                <View style={{ backgroundColor: '#fff' }}>
+            <KeyboardAvoidingView style={{ flex: 1,}} behavior={Platform.OS == "ios" ? "padding" : null}>
+                <View style={{  flex: 1, backgroundColor: '#fff' }}>
                     <ScrollView>
                         <View style={{ padding: 30 }}>
                             <View style={{ marginTop: hp(3), alignSelf: 'center' }}>
@@ -167,31 +144,13 @@ class Signup extends Component {
                                     secureTextEntry={true} />
                             </View>
 
-                            <View style={[styles.textBoxStyle, { marginBottom: 5 }]}>
-                                <Icon
-                                    iconStyle={{ justifyContent: 'center', alignItems: 'center', padding: 9 }}
-                                    name='lock'
-                                    type='evilicon'
-                                    color={Colors.baseTextColor}
-
-                                />
-                                <TextInput style={styles.rectangle3}
-                                    placeholder='Confirm Password'
-                                    // placeholderTextColor={(this.state.success.name) ? null : 'red'}
-                                    onChangeText={(text) => { this.setState({ Cpassword: text }) }}
-                                    onSubmitEditing={() => this.confirmPassword()}
-                                    editable={(this.state.password.length != 0) ? true : false}
-                                    secureTextEntry={true} />
-                            </View>
-                            {(this.state.isPassSame) ? null : <Text style={{ color: Colors.errorColor, alignSelf: 'flex-end' }}>password does not match</Text>}
-
                             <View style={{ paddingTop: hp(3) }}>
                                 <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
                                     <TouchableOpacity
                                         style={[styles.rectangle]}
                                         onPress={() => { this.setState({ disabled: true }, () => this.onSignUp()) }}
                                     >
-                                        <Text style={styles.login} >
+                                        <Text style={{ color: '#fff', fontWeight: '700' }} >
                                             Sign Up
                                         </Text>
                                     </TouchableOpacity>
@@ -199,13 +158,13 @@ class Signup extends Component {
 
                                 <View style={{ paddingTop: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                     <Text style={styles.alreadyHave} >
-                                        Have an Account? 
+                                        Have an Account?
                                     </Text>
                                     <TouchableOpacity
                                         onPress={() => this.props.navigation.navigate('Login')}
                                     >
-                                        <Text style={{ color: Colors.baseTextColor, fontWeight: 'bold' }}> 
-                                         Sign In</Text>
+                                        <Text style={{ color: Colors.baseTextColor, fontWeight: 'bold' }}>
+                                            Sign In</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -217,13 +176,7 @@ class Signup extends Component {
     }
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#00b5ec',
-        alignSelf: 'center'
-    },
+  
     rectangle: {
         width: wp('90%'),
         height: 48,
@@ -247,6 +200,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '700',
         paddingVertical: 30,
+        alignSelf: 'center'
     },
 
     rectangle3: {
